@@ -178,82 +178,35 @@
 
         </style>
         <script>
+ 
+            //============================== شروع تعریف متغیر ها ===============================
 
-            function horoof(a){
-                switch(a){
-                    case 1:
-                        return "First";
+            var a_times =[""];              // عدد تصادفی برای مدت بین دو ورود 
+            var s_times =[""];              // عدد تصادفی برای مدت خدمت دهی           
+            var clock =[""];                // ستون اول : کلاک
+            var ls =[""];                   // ستون دوم : ls
+            var lq =[""];                   // ستون سوم : lq
+            var fel_l =[""];                // ستون چهارم : بخش سمت چپ
+            var fel_m =[""];                // ستون چهارم : بخش وسط
+            var fel_r =[""];                // ستون چهارم : بخش سمت راست
+            var fel =[""];                  // ستون چهارم : FEL
+            var b =[""];                    // ستون ششم : مدت خدمت دهی تا لحظه تی
+            var mq =[""];                   // ماکسیمم طول صف تا لحظه تی
+            var temp_mq =[""];              // متغیر موقتی برای تعیین ماکسیمم طول صف
+            var min_fel =[""];              // پیشامد غریب الوقوع
+            var A =[""];                    // پیشامد رسیدن
+            var D =[""];                    // پیشامد ترک
+            var comment =[""];              // ستون پنجم : کامنت
+            var A_nom =0;                   // متغیری برای تخصیص اعداد تصادفی با ترتیب برای پیشامد رسیدن
+            var D_nom =0;                   // متغیری برای تخصیص اعداد تصادفی با ترتیب برای پیشامد ترک
+            var del =[""];                  // در صورتی که پیشامد ترک اتفاق بیفتد و دی حذف شود این مقدار نان میشود
+            var customer_delay =[""];       // تعداد مشتری در صف در لحظه تی
 
-                    case 2:                        
-                        return "Second";
-                    
-                    case 3:
-                        return "Third";
-                    
-                    case 4:
-                        return "Fourth";
-                    
-                    case 5:
-                        return "Fifth";
+            //============================== پایان تعریف متغیر ها ===============================
 
-                    case 6:
-                        return "Sixth";
+            //================= شروع تابع ساخت اعداد تصادفی و اعمال در جدول ====================
 
-                    case 7:
-                        return "Seventh";
-
-                    case 8:
-                        return "Eighth";
-
-                    case 9:
-                        return "Ninth";
-
-                    case 10:
-                        return "Tenth";  
-                    
-                    case 11:
-                        return "Eleventh";  
-                        
-                    case 12:
-                        return "Twelfth";    
-                }
-            }
-
-            function customer_del(a){
-                if(a == 0){
-                    return "";
-                }
-                if(a == 1){
-                    return "<BR>(Customer delayed)";
-                }
-                if(a > 1){
-                    return "<BR>(" + a + " Customers delayed)";
-                }
-            }
-
-
-            var a_times =[""];
-            var s_times =[""];            
-            var clock =[""];
-            var ls =[""];
-            var lq =[""];
-            var fel_l =[""];
-            var fel_m =[""];
-            var fel_r =[""];   
-            var fel =[""];          
-            var b =[""];
-            var mq =[""]; 
-            var temp_mq =[""];
-            var min_fel =[""];
-            var A =[""];
-            var D =[""];
-            var comment =[""];
-            var A_nom =0;
-            var D_nom =0;
-            var del =[""];
-            var customer_delay =[""];
-
-            function f0() {
+            function generate_random_number() {
                 min_fel[0] = 0                  
                 lq[1] = 0;                
                 b[1] = 0;
@@ -266,25 +219,27 @@
                     s_times[i] = 01 + Math.floor(Math.random() * 8); 
                     ls[i] = 1; 
                 }
-                
+
                 clock[1] = min_fel[0];
                 A[1] = A[0] + a_times[1];
                 D[1] = s_times[1];
+                A_nom++;
                 if (A[1] < D[1]){ 
                     fel_l[1] = "(A," + A[1] + ")";
                     fel_m[1] = "(D," + D[1] + ")";
                     min_fel[1] = A[1];
-                    A_nom++;
                 }
-                else{
+                else if(A[1] > D[1]){
                     fel_l[1] = "(D," + D[1] + ")";
                     fel_m[1] = "(A," + A[1] + ")";
-                    min_fel[1] = D[1];          
+                    min_fel[1] = D[1];         
+                }
+                else if(A[1] == D[1]){
+                    fel_l[1] = "(D," + D[1] + ")";
+                    fel_m[1] = "(A," + A[1] + ")";
+                    min_fel[1] = D[1]; 
                 }   
                 comment[1] = "First a occurs <BR> (a* =" + a_times[1] +  ")  Schedule next A<br>(s* =" + s_times[1] + ")  Schedule next D";
-                
-                    
-                
                     
                 var b_temp =[""];
                 for(i=2;i<=50;i++){
@@ -324,7 +279,7 @@
                             D_nom++;
                             A[i] = A[i-1] + a_times[A_nom];                        
                             D[i] = D[i-1] + s_times[D_nom+1];                        
-                            comment[i] = horoof(A_nom) + "  a occurs: " + fel_l[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A<br>" + horoof(D_nom) + "  d occurs: " + fel_m[i-1] + " <BR> (s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);
+                            comment[i] = horoof(A_nom) + "  a occurs: " + fel_m[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A<br>" + horoof(D_nom) + "  d occurs: " + fel_l[i-1] + " <BR> (s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);
                         }
                         else if(A[i-1] > D[i-1]){
                             lq[i] = lq[i-1] - 1;
@@ -339,14 +294,19 @@
                             comment[i] = horoof(D_nom) + "  d occurs: " + fel_l[i-1] + " <BR> (s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);                    
                         }
 
-                        if (A[i] <= D[i]){
+                        if (A[i] < D[i]){
                             fel_l[i] = "(A," + A[i] + ")";
                             fel_m[i] = "(D," + D[i] + ")";
                             min_fel[i] = A[i];
                         }
-                        else{
-                            fel_l[i] = "(D," + D[i] + ")";
+                        else if (A[i] == D[i]){
                             fel_m[i] = "(A," + A[i] + ")";
+                            fel_l[i] = "(D," + D[i] + ")";
+                            min_fel[i] = D[i];
+                        }
+                        else if(A[i] > D[i]){
+                            fel_m[i] = "(A," + A[i] + ")";
+                            fel_l[i] = "(D," + D[i] + ")";                            
                             min_fel[i] = D[i];  
                         }
                         // ============= When lq=0 & D<A >>> Delete D =========
@@ -360,15 +320,16 @@
                             del[i] ="NONE";
                         }
                     }
-                    //=====================Start MQ = Maximum Quee ==================
+                    //==================== Start MQ = Maximum Quee ==================
                     if (lq[i] >= mq[i-1]){
                         mq[i] = lq[i];
                     }
                     else{
                         mq[i] = mq[i-1];
                     }
-                    //======================End MQ = Maximum Quee ===================
+                    //===================== End MQ = Maximum Quee ===================
                     
+                    //=========================== Start B ===========================
                     b_temp[1] = 0;
                     if (del[i-1] == "NONE"){
                         b[i] = clock[i-1];
@@ -376,7 +337,8 @@
                     else{
                         b[i] = clock[i];
                     }
-                    
+                    //============================ End B ============================
+
                     //======================= Future event list =====================
                     fel_r[i-1] = "(E,60)";
                     fel[i-1] = fel_l[i-1] + "  " + fel_m[i-1] + "  " + fel_r[i-1];
@@ -408,9 +370,12 @@
                 var table_body = "<tbody id=tbody>" + rtable + "</tbody>";
                 document.getElementById("random").innerHTML = table_body; 
             }
+            //================= پایان تابع ساخت اعداد تصادفی و اعمال در جدول ====================
 
-            var c= 1;
-            function f1(){
+            //==================== شروع تابع چاپ سطر به سطر جدول شبیه سازی =======================
+
+            var c= 1;  // متغیر موقتی برای محاسبه ایندکس سطر بعدی
+            function next_row(){
                 document.getElementById("generate").disabled = true;
                 document.getElementById("generate").className = "disable"; // set a new class (even have a class)
                 if(A[c]<=60 && D[c]<=60){ // Sharte Payan
@@ -433,11 +398,87 @@
                     c++; 
                 }                 
             }
-            
+            //==================== پایان تابع چاپ سطر به سطر جدول شبیه سازی =======================
+           //======================= شروع تابع تبدیل ارقام به حروف ترتیبی =========================
+            function horoof(a){   
+                switch(a){
+                    case 1:
+                        return "First";
+
+                    case 2:                        
+                        return "Second";
+                    
+                    case 3:
+                        return "Third";
+                    
+                    case 4:
+                        return "Fourth";
+                    
+                    case 5:
+                        return "Fifth";
+
+                    case 6:
+                        return "Sixth";
+
+                    case 7:
+                        return "Seventh";
+
+                    case 8:
+                        return "Eighth";
+
+                    case 9:
+                        return "Ninth";
+
+                    case 10:
+                        return "Tenth";  
+                    
+                    case 11:
+                        return "Eleventh";  
+                        
+                    case 12:
+                        return "Twelfth";  
+
+                    case 13:
+                        return "Thirteenth";  
+                    
+                    case 14:
+                        return "Fourteenth";  
+                        
+                    case 15:
+                        return "Fifteenth"; 
+
+                    case 16:
+                        return "Sixteenth";  
+                    
+                    case 17:
+                        return "Seventeenth";  
+                        
+                    case 18:
+                        return "Eighteenth";    
+                }
+            }
+            //======================= پایان تابع تبدیل ارقام به حروف ترتیبی =======================
+
+            //===================== شروع تابع تبدیل تعداد افراد در صف به حروف  ====================
+
+            function customer_del(a){
+                if(a == 0){
+                    return "";
+                }
+                if(a == 1){
+                    return "<BR>(Customer delayed)";
+                }
+                if(a > 1){
+                    return "<BR>(" + a + " Customers delayed)";
+                }
+            }
+            //===================== پایان تابع تبدیل تعداد افراد در صف به حروف  ====================            
         </script>
     </head>
     <body> 
-        <button onclick="f0()" id="generate">Generate</button>
+        <!-- کلید ساخت اعداد تصادفی -->
+        <button onclick="generate_random_number()" id="generate">Generate</button>
+        <!-- جدول اعداد تصادفی -->
         <table id ="random">
              <caption>Interarrival And Service Times</caption>
             <tr>
@@ -449,10 +490,10 @@
                 <td></td>
             </tr>
         </table>
-        <br
-        >        
-        <button onclick="f1()">Next Row</button>
-        
+        <br>
+        <!-- کلید ایجاد سطر بعدی در حدول شبیه سازی -->
+        <button onclick="next_row()">Next Row</button>
+        <!-- حدول شبیه سازی -->
         <table id ="table">
             <caption>Simulation Table For Checkout Counter</caption>
             <tr>
