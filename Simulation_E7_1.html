@@ -26,7 +26,7 @@
                 width:48%;
                 float:right;
             }
-            button{
+            button {
                 height:60px;
                 width:90px;
                 color:white;
@@ -40,7 +40,7 @@
                 background: linear-gradient(30deg,rgba(183,222,237,1) ,#0FB2EE 25%, #0EAAEC 45%, rgba(183,222,237,1) 100%);
             }
 
-            button.disable{
+            button.disable {
                 height:60px;
                 width:90px;
                 color:white;
@@ -53,15 +53,16 @@
                 outline:none;
                 background: rgb(165, 165, 165);
             }
+            
+
             button.disable:hover{
                 background: rgb(165, 165, 165);
-
             }
 
-            
             button:hover{
                 background: linear-gradient(30deg,rgb(153, 226, 255) ,rgb(220, 246, 255) 25%, rgb(89, 205, 255) 45%, rgb(0, 140, 195) 100%);
             }
+
             input , .cinput{
                 margin-left:32px;
                 margin-top:5px;
@@ -128,7 +129,7 @@
                 border-radius:10px; 
             }
             table#table tr:nth-child(n+2){
-                border-bottom:2px solid rgb(190, 189, 189);
+                border-bottom:0px solid rgb(190, 189, 189);
             }            
             table#table tr:nth-child(2n+2) {
                 background:#F3F3F3;    
@@ -176,6 +177,22 @@
                 background-color:rgb(153, 226, 255);
             }
 
+            .end tr:last-child td{
+                color:red;
+                font-weight: 600;
+                background-color:rgb(153, 226, 255);
+            }
+            .end tr:last-child td:first-child{                
+                border-bottom-left-radius: 10px;
+            }
+            .end tr:last-child td:last-child{                
+                border-bottom-right-radius: 10px;
+            }
+            .end tr:last-child td:nth-child(4){                
+                width:200px;
+            }
+           
+
         </style>
         <script>
  
@@ -203,11 +220,13 @@
             var customer_delay =[""];       // تعداد مشتری در صف در لحظه تی
 
             //============================== پایان تعریف متغیر ها ===============================
+            
 
             //================= شروع تابع ساخت اعداد تصادفی و اعمال در جدول ====================
 
             function generate_random_number() {
-                min_fel[0] = 0                  
+                document.getElementById("nex_row").disabled = false;
+                min_fel[0] = 0;                  
                 lq[1] = 0;                
                 b[1] = 0;
                 mq[1] = 0;
@@ -219,7 +238,29 @@
                     s_times[i] = 01 + Math.floor(Math.random() * 8); 
                     ls[i] = 1; 
                 }
+                //  مقادیر زیر برای زمانیست که میخواهید شبیه سازی با اعداد مشخصی را ببینید نه تصادفی
+                /* 
+                a_times[1] = 1;
+                a_times[2] = 1;
+                a_times[3] = 6;
+                a_times[4] = 3;
+                a_times[5] = 7;
+                a_times[6] = 5;
+                a_times[7] = 2;
+                a_times[8] = 4;
+                a_times[9] = 1;
 
+                s_times[1] = 4;
+                s_times[2] = 2;
+                s_times[3] = 5;
+                s_times[4] = 4;
+                s_times[5] = 1;
+                s_times[6] = 5;
+                s_times[7] = 4;
+                s_times[8] = 1;
+                s_times[9] = 4;
+                */
+               
                 clock[1] = min_fel[0];
                 A[1] = A[0] + a_times[1];
                 D[1] = s_times[1];
@@ -239,7 +280,7 @@
                     fel_m[1] = "(A," + A[1] + ")";
                     min_fel[1] = D[1]; 
                 }   
-                comment[1] = "First a occurs <BR> (a* =" + a_times[1] +  ")  Schedule next A<br>(s* =" + s_times[1] + ")  Schedule next D";
+                comment[1] = "First A occurs <BR> (a* =" + a_times[1] +  ")  Schedule next A<br>(s* =" + s_times[1] + ")  Schedule next D";
                     
                 var b_temp =[""];
                 for(i=2;i<=50;i++){
@@ -251,17 +292,23 @@
                         lq[i] = 0;
                         temp_mq[i] = lq[i];
                         
-                        comment[i] = horoof(A_nom) + "  a occurs: " + fel_m[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A<br>(s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);
-                        if (A[i] <= D[i]){
+                        comment[i] = horoof(A_nom) + "  A occurs: " + fel_m[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A<br>(s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);
+                        if (A[i] < D[i]){
                             fel_l[i] = "(A," + A[i] + ")";
                             fel_m[i] = "(D," + D[i] + ")";
                             min_fel[i] = A[i];
                         }
-                        else{
+                        else if (A[i] > D[i]){
                             fel_l[i] = "(D," + D[i] + ")";
                             fel_m[i] = "(A," + A[i] + ")";
                             min_fel[i] = D[i];  
-                        }                        
+                        }
+                        else if (A[i] == D[i]){
+                            fel_l[i] = "(D," + D[i] + ")";
+                            fel_m[i] = "(A," + A[i] + ")";
+                            min_fel[i] = D[i];  
+                        }
+
                     }
                     else{                                    
                         if(A[i-1] < D[i-1]){
@@ -270,7 +317,7 @@
                             A_nom++;
                             A[i] = A[i-1] + a_times[A_nom];
                             D[i] = D[i-1];
-                            comment[i] = horoof(A_nom) + "  a occurs: " + fel_l[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A" + customer_del(lq[i]);
+                            comment[i] = horoof(A_nom) + "  A occurs: " + fel_l[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A" + customer_del(lq[i]);
                         }
                         else if(A[i-1] == D[i-1]){
                             lq[i] = lq[i-1];
@@ -279,7 +326,7 @@
                             D_nom++;
                             A[i] = A[i-1] + a_times[A_nom];                        
                             D[i] = D[i-1] + s_times[D_nom+1];                        
-                            comment[i] = horoof(A_nom) + "  a occurs: " + fel_m[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A<br>" + horoof(D_nom) + "  d occurs: " + fel_l[i-1] + " <BR> (s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);
+                            comment[i] = horoof(D_nom) + "  D occurs: " + fel_l[i-1] + " <BR> (s* =" + s_times[D_nom+1] +  ")  Schedule next D<br>" + horoof(A_nom) + "  A occurs: " + fel_m[i-1] + " <BR> (a* =" + a_times[A_nom] +  ")  Schedule next A" +  customer_del(lq[i]);
                         }
                         else if(A[i-1] > D[i-1]){
                             lq[i] = lq[i-1] - 1;
@@ -291,7 +338,7 @@
                             D_nom++; 
                             D[i] = D[i-1] + s_times[D_nom+1];
                             A[i] = A[i-1];                         
-                            comment[i] = horoof(D_nom) + "  d occurs: " + fel_l[i-1] + " <BR> (s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);                    
+                            comment[i] = horoof(D_nom) + "  D occurs: " + fel_l[i-1] + " <BR> (s* =" + s_times[D_nom+1] +  ")  Schedule next D" + customer_del(lq[i]);                    
                         }
 
                         if (A[i] < D[i]){
@@ -310,14 +357,17 @@
                             min_fel[i] = D[i];  
                         }
                         // ============= When lq=0 & D<A >>> Delete D =========
-                        if((A[i-1] > D[i-1]) & (lq[i-1] ==0)){ 
+                        if((A[i-1] > D[i-1]) && (lq[i-1] == 0)){ 
                             ls[i] = 0;
                             //A_nom++;
                             fel_l[i] = "";
                             fel_m[i] = "(A," + A[i-1] + ")"; 
                             min_fel[i] = A[i];
-                            comment[i] = horoof(D_nom) + "  d occurs: " + fel_l[i-1] ;   
+                            comment[i] = horoof(D_nom) + "  D occurs: " + fel_l[i-1] ;   
                             del[i] ="NONE";
+                        }
+                        else{
+                            del[i] ="others";
                         }
                     }
                     //==================== Start MQ = Maximum Quee ==================
@@ -378,16 +428,16 @@
             function next_row(){
                 document.getElementById("generate").disabled = true;
                 document.getElementById("generate").className = "disable"; // set a new class (even have a class)
+                var tablee = document.getElementById("table");
+                var row = tablee.insertRow(-1); // if=1 bala mizare
+                var cell1 = row.insertCell(-1);
+                var cell2 = row.insertCell(-1);
+                var cell3 = row.insertCell(-1);
+                var cell4 = row.insertCell(-1);
+                var cell5 = row.insertCell(-1);
+                var cell6 = row.insertCell(-1);
+                var cell7 = row.insertCell(-1);
                 if(A[c]<=60 && D[c]<=60){ // Sharte Payan
-                    var tablee = document.getElementById("table");
-                    var row = tablee.insertRow(-1); // if=1 bala mizare
-                    var cell1 = row.insertCell(-1);
-                    var cell2 = row.insertCell(-1);
-                    var cell3 = row.insertCell(-1);
-                    var cell4 = row.insertCell(-1);
-                    var cell5 = row.insertCell(-1);
-                    var cell6 = row.insertCell(-1);
-                    var cell7 = row.insertCell(-1);
                     cell1.innerHTML = clock[c];
                     cell2.innerHTML = lq[c];
                     cell3.innerHTML = ls[c];
@@ -396,10 +446,17 @@
                     cell6.innerHTML = b[c];
                     cell7.innerHTML = mq[c];
                     c++; 
+                }
+                else{
+                    cell4.innerHTML = "The End";
+                    document.getElementById("nex_row").disabled = true;
+                    document.getElementById("nex_row").className = "disable";
+                    document.getElementById("table").className = "end";
                 }                 
             }
             //==================== پایان تابع چاپ سطر به سطر جدول شبیه سازی =======================
-           //======================= شروع تابع تبدیل ارقام به حروف ترتیبی =========================
+
+            //======================= 1 شروع تابع تبدیل ارقام به حروف ترتیبی ======================
             function horoof(a){   
                 switch(a){
                     case 1:
@@ -457,7 +514,26 @@
                         return "Eighteenth";    
                 }
             }
-            //======================= پایان تابع تبدیل ارقام به حروف ترتیبی =======================
+            //======================= 1 پایان تابع تبدیل ارقام به حروف ترتیبی ======================
+
+            //=========================== 2 شروع تابع تبدیل ارقام به حروف  ==========================
+
+            function horoof2(a){
+                switch(a){
+                    case 2:                        
+                        return "Two";
+                    
+                    case 3:
+                        return "Three";
+
+                    case 4:                        
+                        return "Four";
+                    
+                    case 5:
+                        return "Five";
+                }     
+            }
+            //========================== 2 پایان تابع تبدیل ارقام به حروف  =========================
 
             //===================== شروع تابع تبدیل تعداد افراد در صف به حروف  ====================
 
@@ -469,7 +545,7 @@
                     return "<BR>(Customer delayed)";
                 }
                 if(a > 1){
-                    return "<BR>(" + a + " Customers delayed)";
+                    return "<BR>(" + horoof2(a) + " Customers delayed)";
                 }
             }
             //===================== پایان تابع تبدیل تعداد افراد در صف به حروف  ====================            
@@ -492,7 +568,7 @@
         </table>
         <br>
         <!-- کلید ایجاد سطر بعدی در حدول شبیه سازی -->
-        <button onclick="next_row()">Next Row</button>
+        <button onclick="next_row()" id="nex_row" disabled>Next Row</button>
         <!-- حدول شبیه سازی -->
         <table id ="table">
             <caption>Simulation Table For Checkout Counter</caption>
